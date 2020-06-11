@@ -306,3 +306,25 @@ def metric(RMSE_k_test):
     RMSE_std_test = np.std(np.array(RMSE_k_test))
 
     return RMSE_mean_test, RMSE_std_test
+
+def plot_error(list_drug, list_prot, dataset):
+
+    fig1 = plt.subplot(211)
+    x = [i for i in range(len(list_drug))]
+    y = [list_drug[i][0] for i in range(len(list_drug))]
+    err = [list_drug[i][1] for i in range(len(list_drug))]
+    labels = [list_drug[i][2] for i in range(len(list_drug))]
+    fig1.errorbar(x, y, yerr = err, c='g', ls=None)
+    fig1.set_xlabel('Drugs')
+    fig1.set_ylabel('Mean error')
+
+    fig2 = plt.subplot(212)
+    x_prot = [i for i in range(len(list_prot))]
+    y_prot = [list_prot[i][0] for i in range(len(list_prot))]
+    err_prot = [list_prot[i][1] for i in range(len(list_prot))]
+    labels_prot = [list_prot[i][2] for i in range(len(list_prot))]
+    fig2.errorbar(x_prot, y_prot, yerr = err_prot, c='b', ls=None)
+    fig2.set_xlabel('Protein')
+    fig2.set_ylabel('Mean error')
+
+    plt.savefig('data/' + dataset + '/plots_' + dataset + '/errors.png')

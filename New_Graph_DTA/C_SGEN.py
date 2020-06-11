@@ -35,7 +35,7 @@ class mydataset(torch.utils.data.Dataset):
         self.Normed_adj = load_tensor(dir + dataset + '/Normed_adj', torch.FloatTensor)
         self.Fringer = load_tensor(dir + dataset + '/fingerprint_stand', torch.FloatTensor)
         self.interactions = load_tensor(dir + dataset + '/Interactions', torch.FloatTensor)
-        self.proteins = load_tensor(dir + dataset + '/proteins', torch.FloatTensor)
+        self.proteins = load_tensor(dir + dataset + '/proteins_embedded', torch.FloatTensor)
 
         self.dataset = list(zip(np.array(self.Features), np.array(self.Normed_adj), np.array(self.Fringer), np.array(self.proteins), np.array(self.interactions)))
 
@@ -363,13 +363,15 @@ class Trainer(object):
         num = 0
         print('Training')
         all_p = []
+        all_t = []
         length = len(train_loader)
         for inc, data in enumerate(train_loader):
             num += 1
             self.optimizer.zero_grad()
             loss, pred, true = self.model(data, C_SGEN_layers=self.C_SGEN_layers)
 
-            all_p.append(list(pred.flatten()))
+            all_p += list(pred.flatten())
+            all_t += list(true.flatten())
 
             loss.backward()
             self.optimizer.step()
@@ -378,7 +380,7 @@ class Trainer(object):
             printProgressBar(inc + 1, length, prefix='Progress', suffix='Complete')
 
         loss_mean = loss_total / num
-        return loss_mean, pred, true
+        return loss_mean, all_p, all_t
 
     def test(self, test_loader):
 

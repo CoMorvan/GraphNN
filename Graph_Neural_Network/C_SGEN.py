@@ -339,13 +339,15 @@ class Trainer(object):
         num = 0
         print('Training')
         all_p = []
+        all_t = []
         length = len(train_loader)
         for inc, data in enumerate(train_loader):
             num += 1
             self.optimizer.zero_grad()
             loss, pred, true = self.model(data, std=self.std, mean=self.mean, C_SGEN_layers=self.C_SGEN_layers)
 
-            all_p.append(list(pred.flatten()))
+            all_p += list(pred.flatten())
+            all_t += list(true.flatten())
 
             loss.backward()
             self.optimizer.step()
@@ -354,7 +356,7 @@ class Trainer(object):
             printProgressBar(inc + 1, length, prefix='Progress', suffix='Complete')
 
         loss_mean = loss_total / num
-        return loss_mean, pred, true
+        return loss_mean, all_p, all_t
 
     def test(self, test_loader):
 

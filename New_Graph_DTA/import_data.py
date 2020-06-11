@@ -238,6 +238,8 @@ def load_data(dir_inp, dataset):
         embeddings = embed_protein(proteins)
         embedded_proteins = [embeddings[protein] for protein in proteins]
 
+        os.makedirs(dir, exist_ok=True)
+        np.save(dir+'proteins_seq.npy', proteins)
         end_prot= timeit.default_timer()
         print('Proteins embedded in {:.3f}s'.format(end_prot-start_fold))
 
@@ -246,7 +248,10 @@ def load_data(dir_inp, dataset):
         save_feature(dir, Features_decrease, adj_decrease, Interactions, smiles, edge_decrease, full_feature_decrease, fingerprints)
         end_graph = timeit.default_timer()
 
-        np.save(dir+"proteins.npy", embedded_proteins)
+
+
+        np.save(dir+"proteins_embedded.npy", embedded_proteins)
+
         print('Data imported for the', opt, 'fold, time taken: {:.2f}s'.format(end_graph - start_fold))
 
 
